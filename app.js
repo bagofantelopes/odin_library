@@ -18,10 +18,15 @@ function addBook(a, b, c, d, e) {
     let book = new Book(a, b, c, d, e)
     bookArr.push(book);
 
+    // creates the div 'cards' and their indices
     let div = document.createElement('div');
+    let index = bookArr.indexOf(book);
+    document.createAttribute('data-index');
     div.setAttribute('id', 'card');
+    div.setAttribute('data-index', index);
     cards.appendChild(div);
 
+    // populates the div 'cards' with the user input
     for (const prop in book) {
         let p = document.createElement('p');
         p.innerText = book[prop];
