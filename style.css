@@ -1,0 +1,62 @@
+/* Standard selectors go here */
+
+* {
+    background-color: rgb(51, 46, 46);
+    color:aliceblue;    
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto;
+    gap: 50px;
+}
+
+/* Class selectors go here */
+
+.book_cards {
+    border: 10px groove black;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 25px;
+    background-color: bisque;
+}
+
+/* ID seletors go here */
+
+#book_form {
+    display: flex;
+    width: fit-content;
+    border: 5px solid white;
+    padding: 15px;
+}
+
+#book_form h2 {
+    display: inherit;
+    align-items: center;
+    padding: 25px;
+}
+
+#book_form form {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+#book_form input, select {
+    margin: 10px;
+    border: 5px groove cornflowerblue;
+}
+
+#card {
+    border: 10px groove black;
+    height: 350px;
+    width: 250px;
+    max-height: 100%;
+    max-width: 100%;
+    padding: 10px;
+    margin: 10px;
+}
