@@ -52,6 +52,10 @@ main {
 }
 
 #card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     border: 10px groove black;
     height: 350px;
     width: 250px;
@@ -59,4 +63,9 @@ main {
     max-width: 100%;
     padding: 10px;
     margin: 10px;
+}
+
+#remove_book_button {
+    background-color: red;
+    width: auto;
 }
