@@ -1,7 +1,10 @@
-let bookArr = [];
-let cards = document.querySelector('.book_cards');
+// 'library' array to hold all the Book objects
+let bookArr = []; 
 
-// constructor function
+// where are all the book cards are held in the DOM
+let cards = document.querySelector('.book_cards'); 
+
+// constructor function for Book objects
 function Book(title, author, genre, publisher, readStatus) {
     this.title = title;
     this.author = author;
@@ -10,79 +13,64 @@ function Book(title, author, genre, publisher, readStatus) {
     this.readStatus = readStatus;
 }
 
-Book.prototype.changeStatus = function(x) {
-    let nodelist = x.parentNode.querySelectorAll('li');
-    let a = nodelist[4].innerText;
-    switch(a) {
+// function for Book objects which lets them 'toggle' their readStatus on their 
+// corresponding div card in the DOM
+Book.prototype.changeStatus = function(targetDivCard) {
+    let nodelist = targetDivCard.parentNode.querySelectorAll('li');
+    let readStatus = nodelist[4].innerText;
+    switch(readStatus) {
         case "In Progress":
-            a = "Finished";
+            readStatus = "Finished";
             break;
         case "Finished":
-            a = "Not Started";
+            readStatus = "Not Started";
             break;
         case "Not Started":
-            a = "In Progress";
+            readStatus = "In Progress";
             break;
     }
-    nodelist[4].innerText = a;
-    this.readStatus = a;    
+    nodelist[4].innerText = readStatus;
+    this.readStatus = readStatus;    
 }
 
+// object to handle all called events
 const eventHandler = {
     handlers: {
         click(e) {
-            let x = e.currentTarget.parentNode;
-            let divIndex = x.parentNode.getAttribute('data-index');
-            console.log('divindex ' + divIndex);
-            //console.log('object index ' + bookArr[divIndex].index)
-            let nodelist = document.querySelectorAll('.book_cards #card');
-            let a = Array.from(nodelist, item => item);
-            console.log('nodelist: ' + a);
-            try {
-                if (divIndex != bookArr[divIndex].index) {
-                    document.querySelectorAll("#card").forEach((test) => {
-                        test.setAttribute('data-index', divIndex - 1);
-                        console.log(divIndex);
-                    });
-                } else if (bookArr[divIndex].index == undefined) {
-
-                }
-            } catch (error) {
-                console.log('ahh fuck');
-            }
+            let targetDivCard = e.currentTarget.parentNode;
+            let divIndex = targetDivCard.parentNode.getAttribute('data-index');
+            let divNodeList = document.querySelectorAll('.book_cards #card');
             
-
             //let attribute = e.currentTarget.parentNode.getAttribute('data-index');
             if (e.target.innerText == "Remove From Library") {
-                // console.log(attribute);
-                // console.log('----');
-                // bookArr.forEach((book) => console.log(book.index));
-
+                
                 // removes the div card from the DOM
-                x.parentNode.remove(x);
-
+                divNodeList[divIndex].remove(divNodeList[divIndex])
+                // updates the nodelist sans the removed div card
+                divNodeList = document.querySelectorAll('.book_cards #card');
+                  
                 // removes the corresponding Book object from bookArr
                 let y = bookArr.indexOf(bookArr[divIndex]);
-                // if (bookArr[divIndex].index < bookArr[divIndex].index + 1) {
-                //     document.querySelectorAll("#card").forEach((test) => {
-                //         console.log('test');
-                //     });
-                // }
-
                 bookArr.splice(y, 1);
 
-                /* 
-                    this method so far works in all cases but it does eventually
-                    'unlink' the actual array index of the object and it's 
-                    corresponding div card's data-index attribute if 'books' are
-                    made and 'deleted' from the 'library'.
+                // reassigns the data-index attribute of each div card so it tracks
+                // with the indices of bookArr
+                divNodeList.forEach((node, i) => {
+                    node.setAttribute('data-index', i);
+                }); 
 
-                    I think this could be corrected somehow, but it does not 
-                    currently interfere with the functioning of the program so
-                    I'm just going to let it remain as is for now. 
-                */
             } else if (e.target.innerText == "Change Read Status") {
-                bookArr[divIndex].changeStatus(x);
+                bookArr[divIndex].changeStatus(targetDivCard);
+
+            } else if (e.target.value == "Add Book") {
+                let title = document.querySelector("#book_form input[name='title']").value;
+                let author = document.querySelector("#book_form input[name='author']").value;
+                let genre = document.querySelector("#book_form input[name='genre']").value;
+                let publisher = document.querySelector("#book_form input[name='publisher']").value;
+                let readStatus = document.querySelector("#book_form select[name='read_status']").value;
+
+                addBook(title, author, genre, publisher, readStatus);
+                e.preventDefault(); // so the form submit doesn't refresh the page each time
             }
         },
         keydown(e) {
@@ -157,16 +145,7 @@ addBook('Dies the Fire', 'S.M. Stirling', 'Fantasy', 'Penguin', 'In Progress');
 
 // event handler for the form to submit new books to the library
 const form = document.getElementById('form_submit')
-form.addEventListener('click', (e) => {
-    let title = document.querySelector("#book_form input[name='title']").value;
-    let author = document.querySelector("#book_form input[name='author']").value;
-    let genre = document.querySelector("#book_form input[name='genre']").value;
-    let publisher = document.querySelector("#book_form input[name='publisher']").value;
-    let readStatus = document.querySelector("#book_form select[name='read_status']").value;
-
-    addBook(title, author, genre, publisher, readStatus);
-    e.preventDefault(); 
-});
+form.addEventListener('click', eventHandler);
 
 /* 
 probably don't even need this function but keeping it for now
