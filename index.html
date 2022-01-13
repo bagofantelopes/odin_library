@@ -6,22 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="app.js" defer></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Teko:wght@700&display=swap" rel="stylesheet"> 
     <title>Library</title>
 </head>
 <body>
 
     <header>
-
+        <div class="container">
+            <h1>Your Library</h1>
+        </div>
     </header>
     
     <main>
+        <div id="book_cards">
+        </div>
+        <button id="display_form_button">ADD NEW BOOK</button>
         <div id="book_form">
-            <div id="book_submit_button">
-                <h2>.</h2>
-                <h2>.</h2>
-                <h2>.</h2>
-                <h2>.</h2>
-            </div>
             <form>
                 <label for="title">Book Title:</label>
                 <input type="text" name="title" id="book_title" autocomplete="off" required>
@@ -33,7 +35,7 @@
                 <input type="text" name="genre" id="genre_name" autocomplete="off" required>
 
                 <label for="publisher">Publisher:</label>
-                <input type="text" name="publisher" id="publisher_name" autocomplete="off">
+                <input type="text" name="publisher" id="publisher_name" autocomplete="off" required>
 
                 <label for="read_status">Status:</label>
                 <select name="read_status" id="read">
@@ -42,12 +44,14 @@
                     <option value="Not Started">Not Started</option>
                 </select>
 
+                <label for="img">Image URL:</label>
+                <input type="text" name="img" id="img_url" autocomplete="off">
+
                 <input id="form_submit" type="submit" value="Add Book">
+                <button id="form_cancel" type="button" value="Cancel">Cancel</button>
             </form>
         </div>
 
-        <div class="book_cards">
-        </div>
 
     </main>
 

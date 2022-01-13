@@ -2,7 +2,7 @@
 let bookArr = []; 
 
 // where are all the book cards are held in the DOM
-let cards = document.querySelector('.book_cards'); 
+let cards = document.querySelector('#book_cards'); 
 
 // constructor function for Book objects
 function Book(title, author, genre, publisher, readStatus) {
@@ -33,21 +33,25 @@ Book.prototype.changeStatus = function(targetDivCard) {
     this.readStatus = readStatus;    
 }
 
-// object to handle all called events
+// object to handle some events
 const eventHandler = {
     handlers: {
-        click(e) {
+        click(e) {     
+            // finding the data-index of the div card so it can be associated with
+            // the Book object array 
             let targetDivCard = e.currentTarget.parentNode;
             let divIndex = targetDivCard.parentNode.getAttribute('data-index');
-            let divNodeList = document.querySelectorAll('.book_cards #card');
-            
-            //let attribute = e.currentTarget.parentNode.getAttribute('data-index');
+
+            // NodeList of the divs under #book_cards so their data-index can be updated to
+            // reflect one being deleted
+            let divNodeList = document.querySelectorAll('#book_cards #card');
+
             if (e.target.innerText == "Remove From Library") {
-                
+
                 // removes the div card from the DOM
                 divNodeList[divIndex].remove(divNodeList[divIndex])
                 // updates the nodelist sans the removed div card
-                divNodeList = document.querySelectorAll('.book_cards #card');
+                divNodeList = document.querySelectorAll('#book_cards #card');
                   
                 // removes the corresponding Book object from bookArr
                 let y = bookArr.indexOf(bookArr[divIndex]);
@@ -61,20 +65,9 @@ const eventHandler = {
 
             } else if (e.target.innerText == "Change Read Status") {
                 bookArr[divIndex].changeStatus(targetDivCard);
-
-            } else if (e.target.value == "Add Book") {
-                let title = document.querySelector("#book_form input[name='title']").value;
-                let author = document.querySelector("#book_form input[name='author']").value;
-                let genre = document.querySelector("#book_form input[name='genre']").value;
-                let publisher = document.querySelector("#book_form input[name='publisher']").value;
-                let readStatus = document.querySelector("#book_form select[name='read_status']").value;
-
-                addBook(title, author, genre, publisher, readStatus);
-                e.preventDefault(); // so the form submit doesn't refresh the page each time
             }
         },
         keydown(e) {
-
         },
     },
     handleEvent(e) {
@@ -89,7 +82,7 @@ const eventHandler = {
 pushes new books to the Book object and generates their display 
 on the page when called by the form event handler
 */
-function addBook(a, b, c, d, e) {
+function addBook(a, b, c, d, e, img) {
     const book = new Book(a, b, c, d, e)
     bookArr.push(book);
 
@@ -98,7 +91,7 @@ function addBook(a, b, c, d, e) {
     let div2 = document.createElement('div'); // button holding div
     let button = document.createElement('button'); // remove book button
     let button2 = document.createElement('button'); // toggle read status button
-    let uList = document.createElement('ul');
+    let uList = document.createElement('ul'); // holds user input in the book 'card'
     let index = bookArr.indexOf(book);
 
     div.setAttribute('id', 'card');
@@ -132,37 +125,51 @@ function addBook(a, b, c, d, e) {
     div2.appendChild(button2);
     div.appendChild(div2);
 
+    if(img) {
+        div.style.backgroundImage = 'img';
+    }
+
     // adds a new key:value to the Book object based on the 
     // data-index value of the book card being created
     book.index = index;
 
 }
 
-// test values
-addBook('Harry Potter', 'JK Rowling', 'Fantasy', 'Bloomsbury Publishing', 'Finished');
-addBook('Wheel of Time', 'Robert Jordan', 'Fantasy', 'TOR Books', 'Finished');
-addBook('Dies the Fire', 'S.M. Stirling', 'Fantasy', 'Penguin', 'In Progress');
-
 // event handler for the form to submit new books to the library
-const form = document.getElementById('form_submit')
-form.addEventListener('click', eventHandler);
+const form_submit_button = document.getElementById('form_submit')
+form_submit_button.addEventListener('click', (e) => {
+    let title = document.querySelector("#book_form input[name='title']").value;
+    let author = document.querySelector("#book_form input[name='author']").value;
+    let genre = document.querySelector("#book_form input[name='genre']").value;
+    let publisher = document.querySelector("#book_form input[name='publisher']").value;
+    let readStatus = document.querySelector("#book_form select[name='read_status']").value;
+    let imgUrl = document.querySelector("#book_form input[name='img']").value;
 
-/* 
-probably don't even need this function but keeping it for now
-would need to be called in case a 'library' was prepopulated with some books somehow
-*/
-// const displayBooks = () => {
-//     bookArr.forEach((book, index) => {
-//         let div = document.createElement('div');
-//         div.setAttribute('id', 'card');
-//         cards.appendChild(div);
+    addBook(title, author, genre, publisher, readStatus, imgUrl);
 
-//         for (const prop in book){
-//             let p = document.createElement('p')
-//             p.innerText = book[prop];
-//             div.appendChild(p)
-//         };
-//     });
-// };
+    e.preventDefault(); // so the form submit doesn't refresh the page each time
+    document.getElementById('book_form').style.display = 'none';
+    form_button.style.display = 'block';
+});
 
+// event handler for 'New Book' button, which displays the form
+const form_button = document.getElementById("display_form_button")
+form_button.addEventListener('click', (e) => {
+    document.getElementById('book_form').style.display = 'block';
+    document.getElementById('book_form').style.transition = 'transition: all 0.5s ease-in';
 
+    document.getElementById('book_cards').style.display = 'flex';
+    form_button.style.display = 'none';
+});
+
+// event handler for 'cancel' button on the form
+const cancel_form = document.getElementById("form_cancel");
+cancel_form.addEventListener('click', (e) => {
+    document.getElementById('book_form').style.display = 'none';
+    form_button.style.display = 'block';
+});
+
+// test values
+// addBook('Harry Potter', 'JK Rowling', 'Fantasy', 'Bloomsbury Publishing', 'Finished');
+// addBook('Wheel of Time', 'Robert Jordan', 'Fantasy', 'TOR Books', 'Finished');
+// addBook('Dies the Fire', 'S.M. Stirling', 'Fantasy', 'Penguin', 'Finished');
