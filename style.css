@@ -65,7 +65,22 @@ main {
     margin: 10px;
 }
 
+#attribute_list {
+    display: flex;
+    flex-direction: column;
+}
+
 #remove_book_button {
     background-color: red;
     width: auto;
+}
+
+#change_status_button {
+    background-color: green;
+    width: auto;
+}
+
+#sub_button_container {
+    background-color: white;
+    display: flex;
 }

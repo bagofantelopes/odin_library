@@ -10,26 +10,65 @@ function Book(title, author, genre, publisher, readStatus) {
     this.readStatus = readStatus;
 }
 
-Book.prototype.changeStatus = function() {
-    
+Book.prototype.changeStatus = function(x) {
+    let nodelist = x.parentNode.querySelectorAll('li');
+    let a = nodelist[4].innerText;
+    switch(a) {
+        case "In Progress":
+            a = "Finished";
+            break;
+        case "Finished":
+            a = "Not Started";
+            break;
+        case "Not Started":
+            a = "In Progress";
+            break;
+    }
+    nodelist[4].innerText = a;
+    this.readStatus = a;    
 }
 
 const eventHandler = {
     handlers: {
         click(e) {
-            if (e.currentTarget.innerText = "Remove From Library") {
-                let attribute = e.currentTarget.parentNode.getAttribute('data-index');
-                console.log(attribute);
-                console.log('----');
-                bookArr.forEach((book) => console.log(book.index));
-                //console.log(bookArr[attribute].index);
+            let x = e.currentTarget.parentNode;
+            let divIndex = x.parentNode.getAttribute('data-index');
+            console.log('divindex ' + divIndex);
+            //console.log('object index ' + bookArr[divIndex].index)
+            let nodelist = document.querySelectorAll('.book_cards #card');
+            let a = Array.from(nodelist, item => item);
+            console.log('nodelist: ' + a);
+            try {
+                if (divIndex != bookArr[divIndex].index) {
+                    document.querySelectorAll("#card").forEach((test) => {
+                        test.setAttribute('data-index', divIndex - 1);
+                        console.log(divIndex);
+                    });
+                } else if (bookArr[divIndex].index == undefined) {
+
+                }
+            } catch (error) {
+                console.log('ahh fuck');
+            }
+            
+
+            //let attribute = e.currentTarget.parentNode.getAttribute('data-index');
+            if (e.target.innerText == "Remove From Library") {
+                // console.log(attribute);
+                // console.log('----');
+                // bookArr.forEach((book) => console.log(book.index));
 
                 // removes the div card from the DOM
-                let x = e.currentTarget.parentNode;
-                x.remove(x);
+                x.parentNode.remove(x);
 
                 // removes the corresponding Book object from bookArr
-                let y = bookArr.indexOf(bookArr[attribute]);
+                let y = bookArr.indexOf(bookArr[divIndex]);
+                // if (bookArr[divIndex].index < bookArr[divIndex].index + 1) {
+                //     document.querySelectorAll("#card").forEach((test) => {
+                //         console.log('test');
+                //     });
+                // }
+
                 bookArr.splice(y, 1);
 
                 /* 
@@ -42,6 +81,8 @@ const eventHandler = {
                     currently interfere with the functioning of the program so
                     I'm just going to let it remain as is for now. 
                 */
+            } else if (e.target.innerText == "Change Read Status") {
+                bookArr[divIndex].changeStatus(x);
             }
         },
         keydown(e) {
@@ -61,31 +102,47 @@ pushes new books to the Book object and generates their display
 on the page when called by the form event handler
 */
 function addBook(a, b, c, d, e) {
-    let book = new Book(a, b, c, d, e)
+    const book = new Book(a, b, c, d, e)
     bookArr.push(book);
 
-    // creates the div 'cards' and their indices
-    let div = document.createElement('div');
-    let button = document.createElement('button');
+    // creates the div 'cards' and their indices, and buttons
+    let div = document.createElement('div'); // main 'card'
+    let div2 = document.createElement('div'); // button holding div
+    let button = document.createElement('button'); // remove book button
+    let button2 = document.createElement('button'); // toggle read status button
+    let uList = document.createElement('ul');
     let index = bookArr.indexOf(book);
 
     div.setAttribute('id', 'card');
+    uList.setAttribute('id', 'attribute_list');
     document.createAttribute('data-index');
     div.setAttribute('data-index', index);
+    div.appendChild(uList);
     cards.appendChild(div);
 
     // populates the div 'cards' with the user input
     for (const prop in book) {
-        let p = document.createElement('p');
-        p.innerText = book[prop];
-        div.appendChild(p);
+        // else the prototype function(s) are litterally added to the card...
+        if (book.hasOwnProperty(prop)) {
+            let li = document.createElement('li');
+            li.innerText = book[prop];
+            uList.appendChild(li);
+        }
     };
 
     // add buttons to the cards;
-    button.setAttribute('id', 'remove_book_button');
-    button.innerText = "Remove From Library";
-    div.appendChild(button);
+    button.setAttribute('id', 'change_status_button');
+    button.innerText = "Change Read Status";
     button.addEventListener('click', eventHandler);
+
+    button2.setAttribute('id', 'remove_book_button');
+    button2.innerText = "Remove From Library";
+    button2.addEventListener('click', eventHandler);
+    div2.setAttribute('id', 'sub_button_container');
+    
+    div2.appendChild(button);
+    div2.appendChild(button2);
+    div.appendChild(div2);
 
     // adds a new key:value to the Book object based on the 
     // data-index value of the book card being created
@@ -94,9 +151,9 @@ function addBook(a, b, c, d, e) {
 }
 
 // test values
-addBook('1', '2', '3', '4', '5');
-addBook('11', '22', '33', '44', '55');
-addBook('-1', '-2', '-3', '-4', '-5');
+addBook('Harry Potter', 'JK Rowling', 'Fantasy', 'Bloomsbury Publishing', 'Finished');
+addBook('Wheel of Time', 'Robert Jordan', 'Fantasy', 'TOR Books', 'Finished');
+addBook('Dies the Fire', 'S.M. Stirling', 'Fantasy', 'Penguin', 'In Progress');
 
 // event handler for the form to submit new books to the library
 const form = document.getElementById('form_submit')
