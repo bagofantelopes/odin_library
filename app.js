@@ -4,18 +4,51 @@ let bookArr = [];
 // where are all the book cards are held in the DOM
 let cards = document.querySelector('#book_cards'); 
 
-// constructor function for Book objects
-function Book(title, author, genre, publisher, readStatus) {
-    this.title = title;
-    this.author = author;
-    this.genre = genre;
-    this.publisher = publisher;
-    this.readStatus = readStatus;
+class BookClass {
+    constructor(title, author, genre, publisher, readStatus) {
+        this.title = title;
+        this.author = author;
+        this.genre = genre;
+        this.publisher = publisher;
+        this.readStatus = readStatus;
+    };
+
+    // getters
+    get title() {
+        return this._title;
+    }
+    get author() {
+        return this._author;
+    }
+    get genre() {
+        return this._genre;
+    }
+    get publisher() {
+        return this._publisher;
+    }
+    get readStatus() {
+        return this._readStatus;
+    }
+
+    // setters
+    set title(value) {
+        this._title = value;
+    }
+    set author(value) {
+        this._author = value;
+    }
+    set genre(value) {
+        this._genre = value;
+    }
+    set publisher(value) {
+        this._publisher = value;
+    }
+    set readStatus(value) {
+        this._readStatus = value;
+    }
 }
 
-// function for Book objects which lets them 'toggle' their readStatus on their 
-// corresponding div card in the DOM
-Book.prototype.changeStatus = function(targetDivCard) {
+BookClass.prototype.changeStatus = function(targetDivCard) {
     let nodelist = targetDivCard.parentNode.querySelectorAll('li');
     let readStatus = nodelist[4].innerText;
     switch(readStatus) {
@@ -83,7 +116,7 @@ pushes new books to the Book object and generates their display
 on the page when called by the form event handler
 */
 function addBook(a, b, c, d, e, img) {
-    const book = new Book(a, b, c, d, e)
+    let book = new BookClass(a, b, c, d, e)
     bookArr.push(book);
 
     // creates the div 'cards' and their indices, and buttons
@@ -169,7 +202,8 @@ cancel_form.addEventListener('click', (e) => {
     form_button.style.display = 'block';
 });
 
-// test values
+//test values
+
 // addBook('Harry Potter', 'JK Rowling', 'Fantasy', 'Bloomsbury Publishing', 'Finished');
 // addBook('Wheel of Time', 'Robert Jordan', 'Fantasy', 'TOR Books', 'Finished');
 // addBook('Dies the Fire', 'S.M. Stirling', 'Fantasy', 'Penguin', 'Finished');
